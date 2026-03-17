@@ -4,47 +4,41 @@ import { injectable } from "inversify";
 
 dotenv.config();
 
-type Tpayload = { userId: string; type?: string };
+type Tpayload = { userId: string };
 
 export interface ITokenService {
-  signAccessToken(payload: Tpayload, expiresIn?: string): Promise<string>;
-  verifyAccessToken(token: string): JwtPayload | null;
+    signAccessToken(payload: Tpayload, expiresIn?: string): Promise<string>;
+    verifyAccessToken(token: string): JwtPayload | null;
 }
 
 export interface ITokens {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 
 export interface ITempTokenRes {
-  success: boolean;
-  message: string;
-  data: Tpayload;
+    success: boolean;
+    message: string;
+    data: Tpayload;
 }
 
 @injectable()
 export class TokenService implements ITokenService {
+    // ---------------- ACCESS TOKEN ----------------
+    async signAccessToken(payload: Tpayload): Promise<string> {
+        const options: SignOptions = {
+            expiresIn: "15m",
+        };
 
-  // ---------------- ACCESS TOKEN ----------------
-  async signAccessToken(payload: Tpayload): Promise<string> {
-    const options: SignOptions = {
-      expiresIn: "15m",
-    };
-
-    return jwt.sign(
-      { ...payload },
-      process.env.ACCESS_TOKEN_SECRET!,
-      options,
-    );
-  }
-
-  // ---------------- VERIFY ACCESS ----------------
-  verifyAccessToken(token: string): JwtPayload | null {
-    try {
-      return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload;
-    } catch {
-      return null;
+        return jwt.sign({ ...payload }, process.env.ACCESS_TOKEN_SECRET!, options);
     }
-  }
 
+    // ---------------- VERIFY ACCESS ----------------
+    verifyAccessToken(token: string): JwtPayload | null {
+        try {
+            return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload;
+        } catch {
+            return null;
+        }
+    }
 }
