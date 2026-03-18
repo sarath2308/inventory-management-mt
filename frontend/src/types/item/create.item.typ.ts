@@ -3,4 +3,4 @@ export type CreateItemType = {
     description: string;
     quantity: number;
     price: number;
-}
+};

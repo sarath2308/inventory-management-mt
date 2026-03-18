@@ -28,8 +28,16 @@ export class CustomerController {
 
     async getAllCustomers(req: IAuthRequest, res: Response): Promise<void> {
         const search = req.query.search as string;
-        const page = req.query.page as string ?? 1;
-        const customerData = await this._customerService.getAllCustomer(search,Number(page));
+        const page = (req.query.page as string) ?? 1;
+        const customerData = await this._customerService.getAllCustomerForTable(
+            search,
+            Number(page),
+        );
+        res.status(HttpStatus.OK).json({ success: true, customerData });
+    }
+
+    async getAllCustomersList(req: IAuthRequest, res: Response): Promise<void> {
+        const customerData = await this._customerService.getCustomers();
         res.status(HttpStatus.OK).json({ success: true, customerData });
     }
 }

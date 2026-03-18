@@ -49,8 +49,8 @@ export class ItemsService implements IItemsService {
     async removeItem(itemId: string): Promise<void> {
         await this._itemsRepo.remove(itemId);
     }
-    async getAllItems(search: string, page: number): Promise<ItemResponseDataType[]> {
-        const items = await this._itemsRepo.getAllItems(search,page);
+    async getAllItemsForTable(search: string, page: number): Promise<ItemResponseDataType[]> {
+        const items = await this._itemsRepo.getAllItems(search, page);
         const responseObj = items.map((item) => {
             return ItemMapper(item);
         });
@@ -70,5 +70,11 @@ export class ItemsService implements IItemsService {
         }
         itemData.quantity -= count;
         await itemData.save();
+    }
+    async getItems(): Promise<ItemResponseDataType[]> {
+        const itemsData = await this._itemsRepo.getAllItemsList();
+        const responseData = itemsData.map((item) => ItemMapper(item));
+
+        return responseData;
     }
 }

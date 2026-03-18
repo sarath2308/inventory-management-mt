@@ -29,22 +29,22 @@ export class CustomersRepo extends BaseRepo<ICustomers> implements ICustomersRep
             { $set: { isDeleted: true } },
         );
     }
-  async getAllCustomers(search: string, page: number): Promise<ICustomers[]> {
-    const skip = (page - 1) * 10;
+    async getAllCustomers(search: string, page: number): Promise<ICustomers[]> {
+        const skip = (page - 1) * 10;
 
-    const query: any = { isDeleted: false };
+        const query: any = { isDeleted: false };
 
-    if (search && search.trim()!=="") {
-        query.$or = [
-            { name: { $regex: search, $options: "i" } },
-            { mobile: { $regex: search, $options: "i" } },
-            { address: { $regex: search, $options: "i" } }
-        ];
+        if (search && search.trim() !== "") {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { mobile: { $regex: search, $options: "i" } },
+                { address: { $regex: search, $options: "i" } },
+            ];
+        }
+
+        return await this._customerModel.find(query).skip(skip).limit(10);
     }
-
-    return await this._customerModel
-        .find(query)
-        .skip(skip)
-        .limit(10);
-}
+    async getCustomerList(): Promise<ICustomers[]> {
+        return await this._customerModel.find({ isDeleted: false });
+    }
 }

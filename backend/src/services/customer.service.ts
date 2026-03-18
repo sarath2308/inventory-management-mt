@@ -50,8 +50,8 @@ export class CustomerService implements ICustomerService {
     async removeCustomer(customerId: string): Promise<void> {
         await this._customerRepo.remove(customerId);
     }
-    async getAllCustomer(search: string,page: number): Promise<CustomerResponseType[]> {
-        const customersData = await this._customerRepo.getAllCustomers(search,page);
+    async getAllCustomerForTable(search: string, page: number): Promise<CustomerResponseType[]> {
+        const customersData = await this._customerRepo.getAllCustomers(search, page);
         const responseObj = customersData.map((customer) => {
             return CustomerMapper(customer);
         });
@@ -63,5 +63,12 @@ export class CustomerService implements ICustomerService {
         const customerData = await this._customerRepo.findById(customerId);
         if (!customerData) return null;
         return CustomerMapper(customerData);
+    }
+
+    async getCustomers(): Promise<CustomerResponseType[]> {
+        const customerData = await this._customerRepo.getCustomerList();
+        const responsData = customerData.map((customer) => CustomerMapper(customer));
+
+        return responsData;
     }
 }

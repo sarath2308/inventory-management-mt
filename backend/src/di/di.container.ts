@@ -1,6 +1,7 @@
 import { AuthController } from "@/contollers/auth.controller";
 import { CustomerController } from "@/contollers/customer.controller";
 import { ItemsController } from "@/contollers/items.controller";
+import { SalesController } from "@/contollers/sale.controller";
 import { IAuthenticateMiddleware } from "@/interface/auth/auth.middleware.interface";
 import { IAuthService } from "@/interface/auth/auth.service.interface";
 import { ICustomersRepo } from "@/interface/customer/customers.repo.interface";
@@ -14,7 +15,7 @@ import { IUserRepo } from "@/interface/user/user.repo.interface";
 import { AuthenticateMiddleware } from "@/middleware/authentication.middleware";
 import { CustomersModel, ICustomers } from "@/model/customers.model";
 import { Iitems, ItemsModel } from "@/model/item.model";
-import { ISales, SalesModel } from "@/model/sales.collection ";
+import { ISales, SalesModel } from "@/model/sales.model ";
 import { IUser, UserModel } from "@/model/user.model";
 import { CustomersRepo } from "@/repo/customers.repo";
 import { ItemsRepo } from "@/repo/items.repo";
@@ -55,6 +56,7 @@ container.bind<IItemsService>(TYPES.ItemService).to(ItemsService).inSingletonSco
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
 container.bind<ItemsController>(TYPES.ItemsController).to(ItemsController);
 container.bind<CustomerController>(TYPES.CustomerController).to(CustomerController);
+container.bind<SalesController>(TYPES.SalesController).to(SalesController);
 
 //middleware
 container.bind<IAuthenticateMiddleware>(TYPES.IAuthMiddleware).to(AuthenticateMiddleware);

@@ -8,6 +8,7 @@ import { Router } from "express";
 export function ItemRoutes(controller: ItemsController) {
     const router = Router();
     router.get("/", controller.getAllItems.bind(controller));
+    router.get("/options", controller.getAllItemsList.bind(controller));
     router.post("/", validateRequest(CreateItemSchema), controller.createItem.bind(controller));
     router.patch(
         "/:itemId",

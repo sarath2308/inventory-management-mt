@@ -66,8 +66,8 @@ export class SalesService implements ISalesService {
     async removeSale(salesId: string): Promise<void> {
         await this._salesRepo.removeSales(salesId);
     }
-    async getAllSales(): Promise<SalesResponseDataType[]> {
-        const salesData = await this._salesRepo.getAllSales();
+    async getAllSales(start: string, end: string, page: number): Promise<SalesResponseDataType[]> {
+        const salesData = await this._salesRepo.getAllSales(start, end, page);
 
         const responseData = salesData.map((sale) => {
             return SalesMapper(sale);

@@ -1,4 +1,4 @@
-import { ISales } from "@/model/sales.collection ";
+import { ISales } from "@/model/sales.model ";
 import { SalesResponseSchema } from "@/schema/sales/sales.response.schema";
 
 export function SalesMapper(sale: ISales) {

@@ -1,7 +1,7 @@
 export type ItemResponseType = {
-     id: string;
+    id: string;
     name: string;
     description: string;
     quantity: number;
     price: number;
-}
+};

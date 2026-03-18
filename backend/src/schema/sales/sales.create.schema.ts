@@ -11,9 +11,7 @@ const bodySchema = z.object({
 
     items: z.array(itemSchema).min(1, "At least one item required"),
 
-    date: z.string(),
-
-    paymentType: z.enum(["cash", "customer"]),
+    paymentType: z.enum(["cash", "online"]),
 });
 
 export const CreateSalesSchema = z.object({

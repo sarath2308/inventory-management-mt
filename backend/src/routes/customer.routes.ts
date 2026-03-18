@@ -9,6 +9,7 @@ export function CustomerRoutes(controller: CustomerController) {
     const router = Router();
 
     router.get("/", controller.getAllCustomers.bind(controller));
+    router.get("/options", controller.getAllCustomersList.bind(controller));
     router.post(
         "/",
         validateRequest(CreateCustomerSchema),

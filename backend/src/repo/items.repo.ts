@@ -33,20 +33,21 @@ export class ItemsRepo extends BaseRepo<Iitems> implements ItemsRepoInterface {
         );
     }
 
-    async getAllItems(search: string,page: number): Promise<Iitems[]> {
-          const skip = (page - 1) * 10;
+    async getAllItems(search: string, page: number): Promise<Iitems[]> {
+        const skip = (page - 1) * 10;
 
-    const query: any = { isDeleted: false };
+        const query: any = { isDeleted: false };
 
-    if (search && search.trim() !== "") {
-        query.$or = [
-            { name: { $regex: search, $options: "i" } },
-            {description:{$regex: search, $options: "i"}},
-        ];
+        if (search && search.trim() !== "") {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { description: { $regex: search, $options: "i" } },
+            ];
+        }
+        return this._itemModel.find(query).skip(skip).limit(10).lean();
     }
-         return this._itemModel
-        .find(query)
-        .skip(skip)
-        .limit(10).lean()
+
+    async getAllItemsList(): Promise<Iitems[]> {
+        return await this._itemModel.find({ isDeleted: false });
     }
 }

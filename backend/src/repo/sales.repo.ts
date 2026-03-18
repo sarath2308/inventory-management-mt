@@ -1,4 +1,4 @@
-import { ISales } from "@/model/sales.collection ";
+import { ISales } from "@/model/sales.model ";
 import { BaseRepo } from "./base";
 import { ISalesRepo } from "@/interface/sales/sales.repo.interface";
 import { inject } from "inversify";
@@ -8,7 +8,7 @@ import mongoose, { Model } from "mongoose";
 
 @injectable()
 export class SalesRepo extends BaseRepo<ISales> implements ISalesRepo {
-    constructor(@inject(TYPES.SalesModel) private _salesModel: Model<ISales>) {
+    constructor(@inject(TYPES.ISaleModel) private _salesModel: Model<ISales>) {
         super(_salesModel);
     }
 
@@ -19,11 +19,23 @@ export class SalesRepo extends BaseRepo<ISales> implements ISalesRepo {
         );
     }
 
-    async getAllSales(): Promise<ISales[]> {
+    async getAllSales(start: string, end: string, page: number): Promise<ISales[]> {
+        const skip = (page - 1) * 10;
+        const query: any = { isDeleted: false };
+
+        if (start && end) {
+            query.createdAt = {
+                $gte: new Date(start),
+                $lte: new Date(end),
+            };
+        }
+
         return this._salesModel
-            .find({ isDeleted: false })
+            .find(query)
             .populate("customerId", "name")
             .populate("items.itemId", "name price")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(10);
     }
 }

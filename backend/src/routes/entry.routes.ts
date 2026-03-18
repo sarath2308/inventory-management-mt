@@ -9,6 +9,8 @@ import { IAuthenticateMiddleware } from "@/interface/auth/auth.middleware.interf
 import { ItemRoutes } from "./item.routes";
 import { CustomerController } from "@/contollers/customer.controller";
 import { CustomerRoutes } from "./customer.routes";
+import { SalesController } from "@/contollers/sale.controller";
+import { SalesRoutes } from "./sales.routes";
 
 export function EntryRoutes() {
     const router = Router();
@@ -20,12 +22,23 @@ export function EntryRoutes() {
     const authMiddleware = wrapAsyncController(
         container.get<IAuthenticateMiddleware>(TYPES.IAuthMiddleware),
     );
-     
-    const customerController = wrapAsyncController(container.get<CustomerController>(TYPES.CustomerController));
+
+    const customerController = wrapAsyncController(
+        container.get<CustomerController>(TYPES.CustomerController),
+    );
+
+    const salesController = wrapAsyncController(
+        container.get<SalesController>(TYPES.SalesController),
+    );
 
     router.use("/auth", AuthRoutes(authController));
     router.use("/items", authMiddleware.handle.bind(authMiddleware), ItemRoutes(itemController));
-    router.use("/customers", authMiddleware.handle.bind(authMiddleware), CustomerRoutes(customerController));
+    router.use(
+        "/customers",
+        authMiddleware.handle.bind(authMiddleware),
+        CustomerRoutes(customerController),
+    );
+    router.use("/sales", authMiddleware.handle.bind(authMiddleware), SalesRoutes(salesController));
 
     return router;
 }

@@ -3,4 +3,4 @@ export type CustomerResponseType = {
     name: string;
     mobile: string;
     address: string;
-}
+};

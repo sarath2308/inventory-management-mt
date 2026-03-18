@@ -8,7 +8,6 @@ export const TYPES = {
     IUserModel: Symbol.for("IUserModel"),
     ITokenService: Symbol.for("ITokenService"),
     CustomerModel: Symbol.for("ICustomerModel"),
-    SalesModel: Symbol.for("SalesModel"),
     ISalesRepo: Symbol.for("ISalesRepo"),
     ICustomerRepo: Symbol.for("ICustomerRepo"),
     ItemsRepo: Symbol.for("ItemsRepo"),

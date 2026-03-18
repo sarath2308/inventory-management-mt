@@ -30,7 +30,12 @@ export class ItemsController {
     async getAllItems(req: Request, res: Response): Promise<void> {
         const search = req.query.search as string;
         const page = req.query.page as string;
-        const result = await this._itemService.getAllItems(search, page?Number(page):1);
+        const result = await this._itemService.getAllItemsForTable(search, page ? Number(page) : 1);
+        res.status(HttpStatus.OK).json({ success: true, itemData: result });
+    }
+
+    async getAllItemsList(req: Request, res: Response): Promise<void> {
+        const result = await this._itemService.getItems();
         res.status(HttpStatus.OK).json({ success: true, itemData: result });
     }
 }
