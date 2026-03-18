@@ -5,6 +5,7 @@ import { IAuthService } from "@/interface/auth/auth.service.interface";
 import { IPasswordService } from "@/interface/password.service.interface";
 import { IUserRepo } from "@/interface/user/user.repo.interface";
 import { LoginDataType } from "@/schema/auth/auth.login.schema";
+import { UserResponseType } from "@/schema/user/user.response.schema";
 import { TYPES } from "@/types/inversify/types";
 import { ITokenService } from "@/utils/token.service";
 import { inject } from "inversify";
@@ -19,13 +20,6 @@ export class AuthService implements IAuthService {
     ) {}
 
     async login(payload: LoginDataType): Promise<{ accessToken: string }> {
-        const hash = await this._passwordService.hashPassword("Sarath@2308");
-        const create = await this._userRepo.create({
-            name: "sarath",
-            email: "sarathvp1546@gmail.com",
-            password: hash,
-        });
-
         const userData = await this._userRepo.findByEmail(payload.email);
         if (!userData) {
             throw new AppError(Messages.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
@@ -42,5 +36,13 @@ export class AuthService implements IAuthService {
             userId: String(userData._id),
         });
         return { accessToken };
+    }
+
+    async getUser(userId: string): Promise<UserResponseType> {
+        const userData = await this._userRepo.findById(userId);
+        if (!userData) {
+            throw new AppError(Messages.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        return { name: userData.name, email: userData.email };
     }
 }

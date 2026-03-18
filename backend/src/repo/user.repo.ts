@@ -8,7 +8,7 @@ import { Model } from "mongoose";
 
 @injectable()
 export class UserRepo extends BaseRepo<IUser> implements IUserRepo {
-    constructor(@inject(TYPES.UserModel) private _userModel: Model<IUser>) {
+    constructor(@inject(TYPES.IUserModel) private _userModel: Model<IUser>) {
         super(_userModel);
     }
 

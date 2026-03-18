@@ -24,9 +24,13 @@ export const Messages = {
     ITEM_QUANTITY_NOT_AVAILABLE: "Item does not have required quantity",
     ITEM_DUPLICATE: "item with the same name already exists",
     ITEM_NOT_CREATED: "item not created",
+    ITEM_CREATED: "item created successfully",
+    ITEM_UPDATED: "item updated",
 
     //customers
     CUSTOMER_NOT_FOUND: "customer not found",
     CUSTOMER_DUPLICATE: "customer with same name already exists",
     CUSTOMER_NOT_CREATED: "customer not created",
+    CUSTOMER_CREATED: "Customer Created",
+    CUSTOMER_UPDATED: "Customer Updated",
 };

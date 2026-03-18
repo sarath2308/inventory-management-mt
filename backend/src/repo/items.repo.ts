@@ -8,7 +8,7 @@ import { ItemsRepoInterface } from "@/interface/items/items.repo.interface";
 
 @injectable()
 export class ItemsRepo extends BaseRepo<Iitems> implements ItemsRepoInterface {
-    constructor(@inject(TYPES.ItemsModel) private _itemModel: Model<Iitems>) {
+    constructor(@inject(TYPES.ItemModel) private _itemModel: Model<Iitems>) {
         super(_itemModel);
     }
     async getItemWithSameName(name: string): Promise<Iitems | null> {
@@ -33,7 +33,20 @@ export class ItemsRepo extends BaseRepo<Iitems> implements ItemsRepoInterface {
         );
     }
 
-    async getAllItems(): Promise<Iitems[]> {
-        return await this._itemModel.find({ isDeleted: false }).lean();
+    async getAllItems(search: string,page: number): Promise<Iitems[]> {
+          const skip = (page - 1) * 10;
+
+    const query: any = { isDeleted: false };
+
+    if (search && search.trim() !== "") {
+        query.$or = [
+            { name: { $regex: search, $options: "i" } },
+            {description:{$regex: search, $options: "i"}},
+        ];
+    }
+         return this._itemModel
+        .find(query)
+        .skip(skip)
+        .limit(10).lean()
     }
 }

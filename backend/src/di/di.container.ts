@@ -1,4 +1,6 @@
 import { AuthController } from "@/contollers/auth.controller";
+import { CustomerController } from "@/contollers/customer.controller";
+import { ItemsController } from "@/contollers/items.controller";
 import { IAuthenticateMiddleware } from "@/interface/auth/auth.middleware.interface";
 import { IAuthService } from "@/interface/auth/auth.service.interface";
 import { ICustomersRepo } from "@/interface/customer/customers.repo.interface";
@@ -51,6 +53,8 @@ container.bind<IItemsService>(TYPES.ItemService).to(ItemsService).inSingletonSco
 
 //controllers
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
+container.bind<ItemsController>(TYPES.ItemsController).to(ItemsController);
+container.bind<CustomerController>(TYPES.CustomerController).to(CustomerController);
 
 //middleware
 container.bind<IAuthenticateMiddleware>(TYPES.IAuthMiddleware).to(AuthenticateMiddleware);

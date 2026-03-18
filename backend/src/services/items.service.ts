@@ -49,8 +49,8 @@ export class ItemsService implements IItemsService {
     async removeItem(itemId: string): Promise<void> {
         await this._itemsRepo.remove(itemId);
     }
-    async getAllItems(): Promise<ItemResponseDataType[]> {
-        const items = await this._itemsRepo.getAllItems();
+    async getAllItems(search: string, page: number): Promise<ItemResponseDataType[]> {
+        const items = await this._itemsRepo.getAllItems(search,page);
         const responseObj = items.map((item) => {
             return ItemMapper(item);
         });

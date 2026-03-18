@@ -1,5 +1,6 @@
+import mongoose from "mongoose";
 import { z } from "zod";
 
 export const ItemParamSchema = z.object({
-    itemId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid item Id"),
+    itemId: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), "Invalid itemId"),
 });

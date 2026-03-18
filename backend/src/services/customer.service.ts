@@ -50,8 +50,8 @@ export class CustomerService implements ICustomerService {
     async removeCustomer(customerId: string): Promise<void> {
         await this._customerRepo.remove(customerId);
     }
-    async getAllCustomer(): Promise<CustomerResponseType[]> {
-        const customersData = await this._customerRepo.getAllCustomers();
+    async getAllCustomer(search: string,page: number): Promise<CustomerResponseType[]> {
+        const customersData = await this._customerRepo.getAllCustomers(search,page);
         const responseObj = customersData.map((customer) => {
             return CustomerMapper(customer);
         });

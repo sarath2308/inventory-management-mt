@@ -6,7 +6,7 @@ export interface IItemsService {
     createItem: (payload: CreateItemDataType) => Promise<void>;
     updateItem: (itemId: string, payload: UpdateItemDataType) => Promise<void>;
     removeItem: (itemId: string) => Promise<void>;
-    getAllItems: () => Promise<ItemResponseDataType[]>;
+    getAllItems: (search: string,page: number) => Promise<ItemResponseDataType[]>;
     findById: (id: string) => Promise<ItemResponseDataType | null>;
     reduceCount: (itemId: string, count: number) => Promise<void>;
 }
