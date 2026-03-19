@@ -28,6 +28,8 @@ export class CustomerService implements ICustomerService {
     async updateCustomer(customerId: string, payload: UpdateCustomerType): Promise<void> {
         const customerData = await this._customerRepo.findById(customerId);
 
+        console.log();
+
         if (!customerData) {
             throw new AppError(Messages.CUSTOMER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }

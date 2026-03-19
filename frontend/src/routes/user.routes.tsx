@@ -10,6 +10,7 @@ const CustomerPage = lazy(() => import("@/pages/customers.page"));
 const SalesPage = lazy(() => import("@/pages/sales.page"));
 const CreateSalePage = lazy(() => import("@/pages/sale.create.page"));
 const DashBoardPage = lazy(() => import("@/pages/dashboard.page"));
+const LedgerPage = lazy(() => import("@/pages/customer.ledger.page"));
 
 const userRoutes: RouteObject[] = [
     {
@@ -55,6 +56,14 @@ const userRoutes: RouteObject[] = [
                         element: (
                             <Suspense fallback={<Loader />}>
                                 <CustomerPage />
+                            </Suspense>
+                        ),
+                    },
+                    {
+                        path: "/customers/:customerId/ledger",
+                        element: (
+                            <Suspense fallback={<Loader />}>
+                                <LedgerPage />
                             </Suspense>
                         ),
                     },

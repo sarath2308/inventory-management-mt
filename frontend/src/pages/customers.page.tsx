@@ -9,8 +9,9 @@ import { useGetCustomers } from "@/hooks/customers/customer.get.hook";
 import { useRemoveCustomer } from "@/hooks/customers/customer.remove.hook";
 import { useUpdateCustomer } from "@/hooks/customers/customer.update.hook";
 import type { CustomerResponseType } from "@/types/customers/customer.response.type";
-import { Edit2, Trash2, Plus, Search, Loader2 } from "lucide-react";
+import { Edit2, Trash2, Plus, Search, Loader2, BookOpenCheckIcon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CustomersPage = () => {
     const [page, setPage] = useState(1);
@@ -18,6 +19,7 @@ const CustomersPage = () => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<CustomerResponseType | null>(null);
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -140,6 +142,12 @@ const CustomersPage = () => {
                 rowKey={(row) => row.id}
                 renderActions={(row) => (
                     <div className="flex gap-2">
+                        <button
+                            onClick={() => navigate(`/customers/${row.id}/ledger`)}
+                            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all"
+                        >
+                            <BookOpenCheckIcon size={16} />
+                        </button>
                         <button
                             onClick={() => openEditModal(row)}
                             className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all"

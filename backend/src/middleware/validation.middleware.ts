@@ -5,19 +5,13 @@ import { ZodError, ZodObject } from "zod";
 export const validateRequest = (schema: ZodObject<any>) => {
     return (req: Request, res: Response, next: NextFunction) => {
         try {
-            const shape = schema.shape;
+            const validated = schema.parse({
+                body: req.body,
+                params: req.params,
+                query: req.query,
+            });
 
-            if (shape?.body) {
-                req.body = shape.body.parse(req.body);
-            }
-
-            if (shape?.params) {
-                req.params = shape.params.parse(req.params);
-            }
-
-            if (shape?.query) {
-                req.query = shape.query.parse(req.query);
-            }
+            req.validated = validated;
 
             next();
         } catch (error) {

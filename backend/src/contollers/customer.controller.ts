@@ -15,20 +15,22 @@ export class CustomerController {
     }
 
     async updateCustomer(req: IAuthRequest, res: Response): Promise<void> {
-        const customerId = req.params.customerId as string;
-        await this._customerService.updateCustomer(customerId, req.body);
+        const { params, body } = req.validated!;
+        const { customerId } = params;
+        await this._customerService.updateCustomer(customerId, body);
         res.status(HttpStatus.OK).json({ success: true, message: Messages.CUSTOMER_UPDATED });
     }
 
     async removeCustomer(req: IAuthRequest, res: Response): Promise<void> {
-        const customerId = req.params.customerId as string;
+        const { params } = req.validated!;
+        const { customerId } = params;
         await this._customerService.removeCustomer(customerId);
         res.status(HttpStatus.OK).json({ success: true });
     }
 
     async getAllCustomers(req: IAuthRequest, res: Response): Promise<void> {
-        const search = req.query.search as string;
-        const page = (req.query.page as string) ?? 1;
+        const { query } = req.validated!;
+        const { search, page } = query;
         const customerData = await this._customerService.getAllCustomerForTable(
             search,
             Number(page),

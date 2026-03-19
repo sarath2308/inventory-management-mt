@@ -4,7 +4,16 @@ import DataTable from "@/components/table.component";
 import { useGetSales } from "@/hooks/sales/sales.get.hook";
 import { useRemoveSale } from "@/hooks/sales/sales.remove.hook";
 import type { SalesResponseDataType } from "@/types/sales/sales.response.type";
-import { Trash2, Plus, Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { exportToExcel } from "@/utils/export.to.excel";
+import { exportToPDF } from "@/utils/export.to.pdf";
+import {
+    Trash2,
+    Plus,
+    Calendar as CalendarIcon,
+    Loader2,
+    FileSpreadsheet,
+    FileText,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,16 +23,18 @@ const SalesPage = () => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<SalesResponseDataType | null>(null);
 
-    // Date Range State (passing only strings as requested)
+    const today = new Date().toISOString().split("T")[0];
+
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
 
     const removeSaleMutation = useRemoveSale();
 
-    // Passing page, startDate, and endDate strings to the hook
     const { data, isLoading, refetch } = useGetSales(startDate, endDate, page);
-
     const sales: SalesResponseDataType[] = data?.saleData ?? [];
+
+    // Logic check for disabling export buttons
+    const isExportDisabled = sales.length === 0 || isLoading;
 
     const handleDelete = async () => {
         if (!selectedItem) return;
@@ -34,6 +45,26 @@ const SalesPage = () => {
         } catch (error) {
             console.error("Delete failed:", error);
         }
+    };
+
+    const handleDateChange = (type: "start" | "end", value: string) => {
+        if (type === "start") {
+            if (value === endDate) {
+                const nextDay = new Date(value);
+                nextDay.setDate(nextDay.getDate() + 1);
+                const nextDayStr = nextDay.toISOString().split("T")[0];
+                if (nextDayStr <= today) setEndDate(nextDayStr);
+            }
+            setStartDate(value);
+        } else {
+            if (value === startDate) {
+                const prevDay = new Date(value);
+                prevDay.setDate(prevDay.getDate() - 1);
+                setStartDate(prevDay.toISOString().split("T")[0]);
+            }
+            setEndDate(value);
+        }
+        setPage(1);
     };
 
     const columns: Column<SalesResponseDataType>[] = [
@@ -74,12 +105,33 @@ const SalesPage = () => {
         },
     ];
 
+    const handleExcelExport = () => {
+        const formattedData = sales.map((sale) => ({
+            Date: new Date(sale.date).toLocaleDateString(),
+            Customer: sale.customerName,
+            TotalItems: sale.totalItems,
+            Total: sale.totalAmount,
+            PaymentType: sale.paymentType,
+        }));
+        exportToExcel(formattedData, "salesReport");
+    };
+
+    const handlePdfExport = () => {
+        const column = ["Date", "Customer", "Total Items", "Total Amount", "Payment Type"];
+        const rows = sales.map((sale) => [
+            new Date(sale.date).toLocaleDateString(),
+            sale.customerName,
+            sale.totalItems,
+            sale.totalAmount,
+            sale.paymentType,
+        ]);
+        exportToPDF("Sales Report", column, rows, "salesReport");
+    };
+
     return (
         <div className="space-y-6">
-            {/* Header Controls */}
             <div className="flex flex-col lg:flex-row gap-4 items-end justify-between bg-[#0c0c0e] p-6 rounded-2xl border border-zinc-800/50">
                 <div className="flex flex-wrap items-center gap-4 w-full">
-                    {/* Start Date */}
                     <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">
                             Start Date
@@ -91,17 +143,14 @@ const SalesPage = () => {
                             />
                             <input
                                 type="date"
+                                max={today}
                                 value={startDate}
-                                onChange={(e) => {
-                                    setStartDate(e.target.value);
-                                    setPage(1);
-                                }}
+                                onChange={(e) => handleDateChange("start", e.target.value)}
                                 className="bg-zinc-900 border border-zinc-800 text-white text-xs rounded-xl pl-9 pr-4 py-2.5 focus:ring-1 ring-zinc-700 outline-none transition-all appearance-none"
                             />
                         </div>
                     </div>
 
-                    {/* End Date */}
                     <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">
                             End Date
@@ -113,11 +162,9 @@ const SalesPage = () => {
                             />
                             <input
                                 type="date"
+                                max={today}
                                 value={endDate}
-                                onChange={(e) => {
-                                    setEndDate(e.target.value);
-                                    setPage(1);
-                                }}
+                                onChange={(e) => handleDateChange("end", e.target.value)}
                                 className="bg-zinc-900 border border-zinc-800 text-white text-xs rounded-xl pl-9 pr-4 py-2.5 focus:ring-1 ring-zinc-700 outline-none transition-all appearance-none"
                             />
                         </div>
@@ -137,15 +184,34 @@ const SalesPage = () => {
                     )}
                 </div>
 
-                <button
-                    onClick={() => navigate("/sales/new")}
-                    className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-black font-bold rounded-xl hover:bg-zinc-200 transition-all shrink-0"
-                >
-                    <Plus size={18} /> New Sale
-                </button>
+                <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <button
+                        onClick={handleExcelExport}
+                        disabled={isExportDisabled}
+                        className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold text-xs rounded-xl hover:text-white hover:border-zinc-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Export to Excel"
+                    >
+                        <FileSpreadsheet size={16} />
+                        <span className="lg:hidden xl:inline">Excel</span>
+                    </button>
+                    <button
+                        onClick={handlePdfExport}
+                        disabled={isExportDisabled}
+                        className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold text-xs rounded-xl hover:text-white hover:border-zinc-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Export to PDF"
+                    >
+                        <FileText size={16} />
+                        <span className="lg:hidden xl:inline">PDF</span>
+                    </button>
+                    <button
+                        onClick={() => navigate("/sales/new")}
+                        className="flex-[2] lg:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-black font-bold text-xs rounded-xl hover:bg-zinc-200 transition-all shrink-0"
+                    >
+                        <Plus size={18} /> <span className="whitespace-nowrap">New Sale</span>
+                    </button>
+                </div>
             </div>
 
-            {/* Table */}
             <DataTable
                 page={page}
                 pageSize={10}
@@ -153,7 +219,7 @@ const SalesPage = () => {
                 isLoading={isLoading}
                 columns={columns}
                 data={sales}
-                total={sales.length}
+                total={data?.totalCount ?? sales.length}
                 rowKey={(row) => row.id}
                 renderActions={(row) => (
                     <div className="flex gap-2">
@@ -175,7 +241,6 @@ const SalesPage = () => {
                 )}
             />
 
-            {/* Confirm Delete Modal */}
             <ConfirmModal
                 isOpen={isConfirmOpen}
                 onClose={() => setIsConfirmOpen(false)}

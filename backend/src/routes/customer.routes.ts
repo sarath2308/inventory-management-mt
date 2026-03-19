@@ -3,12 +3,17 @@ import { validateRequest } from "@/middleware/validation.middleware";
 import { CreateCustomerSchema } from "@/schema/customers/customer.create.schema";
 import { RemoveCustomerSchema } from "@/schema/customers/customer.remove.schema";
 import { UpdateCustomerSchema } from "@/schema/customers/customer.update.schema";
+import { GetCustomersSchema } from "@/schema/customers/customers.get.schema";
 import { Router } from "express";
 
 export function CustomerRoutes(controller: CustomerController) {
     const router = Router();
 
-    router.get("/", controller.getAllCustomers.bind(controller));
+    router.get(
+        "/",
+        validateRequest(GetCustomersSchema),
+        controller.getAllCustomers.bind(controller),
+    );
     router.get("/options", controller.getAllCustomersList.bind(controller));
     router.post(
         "/",

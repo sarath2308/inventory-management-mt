@@ -6,4 +6,8 @@ export const SALE_API = {
     REMOVE: (saleId: string) => api.delete(`/sales/${saleId}`).then((res) => res.data),
     GET_ALL_SALES: (start: string, end: string, page: number) =>
         api.get(`/sales?start=${start}&end=${end}&page=${page}`).then((res) => res.data),
+    GET_CUSTOMER_SALES: (customerId: string, start: string, end: string, page: number) =>
+        api
+            .get(`/sales/${customerId}/ledger?start=${start}&end=${end}&page=${page}`)
+            .then((res) => res.data),
 };

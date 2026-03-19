@@ -75,4 +75,16 @@ export class SalesService implements ISalesService {
 
         return responseData;
     }
+
+    async getSalesDataForLedger(
+        customerId: string,
+        start: string,
+        end: string,
+        page: number,
+    ): Promise<SalesResponseDataType[]> {
+        const salesData = await this._salesRepo.getSaleByCustomer(customerId, start, end, page);
+        const responseData = salesData.map((sale) => SalesMapper(sale));
+
+        return responseData;
+    }
 }

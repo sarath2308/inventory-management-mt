@@ -5,4 +5,10 @@ export interface ISalesService {
     createSale: (payload: CreateSalesDataType) => Promise<void>;
     removeSale: (salesId: string) => Promise<void>;
     getAllSales: (start: string, end: string, page: number) => Promise<SalesResponseDataType[]>;
+    getSalesDataForLedger: (
+        customerId: string,
+        start: string,
+        end: string,
+        page: number,
+    ) => Promise<SalesResponseDataType[]>;
 }
