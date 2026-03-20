@@ -1,8 +1,8 @@
 import express from "express";
+import "module-alias/register";
 import cookieParser from "cookie-parser";
 import { urlencoded } from "express";
 import cors from "cors";
-import "dotenv/config";
 import { connectDB } from "./config/db.connect";
 import { errorHandler } from "./middleware/error.handler";
 import { EntryRoutes } from "./routes/entry.routes";

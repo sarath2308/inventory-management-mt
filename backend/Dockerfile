@@ -1,18 +1,36 @@
-FROM node:22.17.0-alpine
+# --------- BUILD STAGE ---------
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# copy dependency files first (docker caching)
 COPY package*.json ./
 
-# install dependencies
-RUN npm install
+# install exact dependencies
+RUN npm ci
 
-# copy application code
 COPY . .
 
-# expose backend port
+# build typescript
+RUN npm run build
+
+
+# --------- PRODUCTION STAGE ---------
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# install only production deps
+RUN npm ci --omit=dev
+
+# copy built files
+COPY --from=builder /app/dist ./dist
+
+# set production mode
+ENV NODE_ENV=production
+
 EXPOSE 5000
 
-# run development server
-CMD ["npm", "run", "dev"]
+# run app
+CMD ["node", "dist/server.js"]
