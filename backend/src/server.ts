@@ -6,10 +6,12 @@ import "dotenv/config";
 import { connectDB } from "./config/db.connect";
 import { errorHandler } from "./middleware/error.handler";
 import { EntryRoutes } from "./routes/entry.routes";
+import { loadConfigFromSSM } from "./config/ssm";
 
 const app = express();
 
 async function startServer() {
+    await loadConfigFromSSM();
     await connectDB();
 
     app.use(cookieParser());
