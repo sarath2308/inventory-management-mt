@@ -26,11 +26,18 @@ async function startServer() {
         }),
     );
 
+    // Request timeout middleware
+    app.use((req, res, next) => {
+        req.setTimeout(30000);
+        res.setTimeout(30000);
+        next();
+    });
+
     app.use("/api", EntryRoutes());
+    app.use(errorHandler);
+    
     const PORT: number = Number(process.env.PORT) || 5000;
     app.listen(PORT, () => console.log(`Server running on Port ${PORT}`));
-
-    app.use(errorHandler);
 }
 
 startServer().catch((error) => {
